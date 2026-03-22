@@ -1,9 +1,8 @@
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { getSubscriptions } from "@/app/actions/subscriptions";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, PlusIcon } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
+import { SearchIcon } from "lucide-react";
+import { AddSubscriptionButton } from "@/components/dashboard/add-subscription-button";
 
 export default async function SubscriptionsPage() {
   const subscriptions = await getSubscriptions() as any[];
@@ -26,10 +25,7 @@ export default async function SubscriptionsPage() {
               className="w-full pl-8 bg-background"
             />
           </div>
-          <Link href="/add" className={buttonVariants()}>
-            <PlusIcon className="h-4 w-4 sm:mr-2" /> 
-            <span className="hidden sm:inline">Add</span>
-          </Link>
+          <AddSubscriptionButton size="default" />
         </div>
       </div>
 
