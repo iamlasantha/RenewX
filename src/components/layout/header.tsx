@@ -12,7 +12,7 @@ export function Header() {
               <CopyIcon className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="hidden font-semibold sm:inline-block">
-              Subscription Tracker
+              RenewX
             </span>
           </Link>
         </div>
