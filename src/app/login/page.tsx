@@ -14,15 +14,26 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { login, signup } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const router = useRouter();
+  const [errorStr, setErrorStr] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simple mock auth - redirect to dashboard
-    router.push("/");
+    setIsLoading(true);
+    setErrorStr("");
+    
+    const formData = new FormData(e.currentTarget);
+    const action = isLogin ? login : signup;
+    
+    const result = await action(formData);
+    if (result?.error) {
+      setErrorStr(result.error);
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -49,15 +60,20 @@ export default function LoginPage() {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {errorStr && (
+                <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+                  {errorStr}
+                </div>
+              )}
               {!isLogin && (
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="John Doe" required />
+                  <Input id="name" name="name" placeholder="John Doe" required />
                 </div>
               )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Input id="email" name="email" type="email" placeholder="m@example.com" required />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -71,12 +87,12 @@ export default function LoginPage() {
                     </a>
                   )}
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full">
-                {isLogin ? "Sign in" : "Create account"}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Please wait..." : (isLogin ? "Sign in" : "Create account")}
               </Button>
               <div className="text-center text-sm">
                 <span className="text-muted-foreground">

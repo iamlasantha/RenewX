@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Subscription } from "@/lib/mock-data";
+import { Subscription } from "@/app/actions/subscriptions";
 
 export function SubscriptionList({ subscriptions }: { subscriptions: Subscription[] }) {
   if (subscriptions.length === 0) {
@@ -31,10 +31,10 @@ export function SubscriptionList({ subscriptions }: { subscriptions: Subscriptio
             <div className="flex justify-between items-end mt-2 pt-3 border-t">
               <div className="flex flex-col">
                 <span className="text-xs text-muted-foreground">Renews on</span>
-                <span className="text-sm font-medium">{new Date(sub.renewalDate).toLocaleDateString()}</span>
+                <span className="text-sm font-medium">{new Date(sub.renewal_date).toLocaleDateString()}</span>
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded bg-primary/10 text-primary">
-                {sub.billingCycle}
+                {sub.billing_cycle}
               </span>
             </div>
           </CardContent>

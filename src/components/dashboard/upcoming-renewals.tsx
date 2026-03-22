@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Subscription } from "@/lib/mock-data";
+import { Subscription } from "@/app/actions/subscriptions";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 export function UpcomingRenewals({ subscriptions }: { subscriptions: Subscription[] }) {
-  // Sort by closest renewal date (mock implementation)
+  // Sort by closest renewal date
   const upcoming = [...subscriptions].sort((a, b) => 
-    new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime()
+    new Date(a.renewal_date).getTime() - new Date(b.renewal_date).getTime()
   ).slice(0, 3);
 
   return (
@@ -24,7 +24,7 @@ export function UpcomingRenewals({ subscriptions }: { subscriptions: Subscriptio
               <div className="flex flex-col">
                 <span className="font-medium text-sm">{sub.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {format(parseISO(sub.renewalDate), 'MMM dd')}
+                  {format(parseISO(sub.renewal_date), 'MMM dd')}
                 </span>
               </div>
               <div className="font-semibold text-sm">

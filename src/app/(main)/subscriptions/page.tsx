@@ -1,9 +1,11 @@
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
-import { MOCK_SUBSCRIPTIONS } from "@/lib/mock-data";
+import { getSubscriptions } from "@/app/actions/subscriptions";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 
-export default function SubscriptionsPage() {
+export default async function SubscriptionsPage() {
+  const subscriptions = await getSubscriptions() as any[];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -24,7 +26,7 @@ export default function SubscriptionsPage() {
       </div>
 
       <div className="pt-2">
-        <SubscriptionList subscriptions={MOCK_SUBSCRIPTIONS} />
+        <SubscriptionList subscriptions={subscriptions} />
       </div>
     </div>
   );
