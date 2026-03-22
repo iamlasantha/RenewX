@@ -8,8 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, User } from "lucide-react";
 
+import { logout } from "@/app/actions/auth";
+
 export default function SettingsPage() {
   const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -28,7 +34,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16 bg-primary/10">
-              <AvatarFallback className="text-primary font-medium text-xl">JD</AvatarFallback>
+              <AvatarFallback className="text-primary font-medium text-xl">US</AvatarFallback>
             </Avatar>
             <div>
               <p className="text-sm font-medium">Profile Picture</p>
@@ -38,13 +44,13 @@ export default function SettingsPage() {
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" defaultValue="John Doe" />
+              <Input id="name" defaultValue="" placeholder="Loading..." disabled />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" defaultValue="johndoe@example.com" />
+              <Input id="email" type="email" defaultValue="" placeholder="Loading..." disabled />
             </div>
-            <Button>Save Changes</Button>
+            <Button disabled>Save Changes</Button>
           </div>
         </CardContent>
       </Card>
@@ -62,7 +68,7 @@ export default function SettingsPage() {
         <CardContent>
           <Button 
             variant="destructive" 
-            onClick={() => router.push("/login")}
+            onClick={handleLogout}
           >
             Sign Out
           </Button>
