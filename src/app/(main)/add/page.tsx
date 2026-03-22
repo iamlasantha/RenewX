@@ -1,18 +1,33 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { addSubscription } from "@/app/actions/subscriptions";
 
 export default function AddSubscriptionPage() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorStr, setErrorStr] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push("/");
+    setIsLoading(true);
+    setErrorStr("");
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await addSubscription(formData);
+    
+    if (result.error) {
+       setErrorStr(result.error);
+       setIsLoading(false);
+    } else {
+       router.push("/");
+    }
   };
 
   return (
@@ -31,19 +46,24 @@ export default function AddSubscriptionPage() {
             <CardDescription>Enter the provider and payment information.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {errorStr && (
+              <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+                {errorStr}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="e.g. Netflix, Spotify" required />
+              <Input id="name" name="name" placeholder="e.g. Netflix, Spotify" required />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="amount">Amount ($)</Label>
-                <Input id="amount" type="number" step="0.01" placeholder="15.00" required />
+                <Input id="amount" name="amount" type="number" step="0.01" placeholder="15.00" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cycle">Billing Cycle</Label>
-                <Select defaultValue="monthly">
+                <Select name="cycle" defaultValue="monthly">
                   <SelectTrigger id="cycle">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -57,7 +77,7 @@ export default function AddSubscriptionPage() {
 
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select defaultValue="entertainment">
+              <Select name="category" defaultValue="entertainment">
                 <SelectTrigger id="category">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
@@ -73,14 +93,16 @@ export default function AddSubscriptionPage() {
 
             <div className="space-y-2">
               <Label htmlFor="date">Next Renewal Date</Label>
-              <Input id="date" type="date" required />
+              <Input id="date" name="date" type="date" required />
             </div>
           </CardContent>
           <CardFooter className="flex justify-end space-x-2">
-            <Button variant="outline" type="button" onClick={() => router.back()}>
+            <Button variant="outline" type="button" onClick={() => router.back()} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit">Save Subscription</Button>
+            <Button type="submit" disabled={isLoading}>
+               {isLoading ? "Saving..." : "Save Subscription"}
+            </Button>
           </CardFooter>
         </form>
       </Card>

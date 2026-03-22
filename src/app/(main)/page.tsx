@@ -1,10 +1,31 @@
 import { SummaryCard } from "@/components/dashboard/summary-card";
 import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
-import { CategoryChart } from "@/components/dashboard/category-chart";
+import { CategoryChart, CategoryData } from "@/components/dashboard/category-chart";
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
-import { MOCK_SUBSCRIPTIONS, TOTAL_MONTHLY_SPEND } from "@/lib/mock-data";
+import { getSubscriptions, Subscription } from "@/app/actions/subscriptions";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const subscriptions = await getSubscriptions() as unknown as Subscription[];
+
+  const activeSubscriptions = subscriptions.filter(s => s.status === 'Active');
+
+  const totalMonthlySpend = activeSubscriptions.reduce(
+    (acc, sub) => acc + (sub.billing_cycle === "Monthly" ? sub.amount : sub.amount / 12),
+    0
+  );
+
+  const categoriesMap = new Map<string, number>();
+  activeSubscriptions.forEach(sub => {
+    const cost = sub.billing_cycle === "Monthly" ? sub.amount : sub.amount / 12;
+    categoriesMap.set(sub.category, (categoriesMap.get(sub.category) || 0) + cost);
+  });
+
+  const categoryData: CategoryData[] = Array.from(categoriesMap.entries()).map(([name, amount], index) => ({
+    name,
+    amount,
+    fill: `var(--chart-${(index % 5) + 1})`
+  }));
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-1">
@@ -17,19 +38,19 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Summary Card - takes 1 col on all sizes above mobile */}
         <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-6">
-          <SummaryCard totalAmount={TOTAL_MONTHLY_SPEND} />
-          <UpcomingRenewals subscriptions={MOCK_SUBSCRIPTIONS} />
+          <SummaryCard totalAmount={totalMonthlySpend} />
+          <UpcomingRenewals subscriptions={activeSubscriptions as any} />
         </div>
         
         {/* Category Chart */}
         <div className="md:col-span-1 lg:col-span-2">
-          <CategoryChart />
+          <CategoryChart data={categoryData} />
         </div>
       </div>
 
       <div className="space-y-4 pt-2">
         <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
-        <SubscriptionList subscriptions={MOCK_SUBSCRIPTIONS} />
+        <SubscriptionList subscriptions={subscriptions as any} />
       </div>
     </div>
   );

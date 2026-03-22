@@ -3,17 +3,30 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { MOCK_CATEGORIES } from "@/lib/mock-data";
 
-export function CategoryChart() {
+export type CategoryData = {
+  name: string;
+  amount: number;
+  fill?: string;
+};
+
+export function CategoryChart({ data }: { data: CategoryData[] }) {
+  if (data.length === 0) {
+    return (
+      <Card className="border-border/50 shadow-sm flex flex-col items-center justify-center p-6 text-muted-foreground">
+        <p className="text-sm">No spend data yet.</p>
+      </Card>
+    );
+  }
+
   const chartConfig = {
     amount: {
       label: "Amount",
     },
-    ...MOCK_CATEGORIES.reduce((acc, cat, idx) => {
+    ...data.reduce((acc, cat, idx) => {
       acc[cat.name] = { 
         label: cat.name,
-        color: `var(--chart-${(idx % 5) + 1})`
+        color: cat.fill || `var(--chart-${(idx % 5) + 1})`
       };
       return acc;
     }, {} as Record<string, { label: string; color: string }>)
@@ -32,7 +45,7 @@ export function CategoryChart() {
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <Pie
-                  data={MOCK_CATEGORIES}
+                  data={data}
                   dataKey="amount"
                   nameKey="name"
                   cx="50%"
@@ -42,10 +55,10 @@ export function CategoryChart() {
                   strokeWidth={2}
                   paddingAngle={2}
                 >
-                  {MOCK_CATEGORIES.map((cat, index) => (
+                  {data.map((cat, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={`var(--chart-${(index % 5) + 1})`} 
+                      fill={cat.fill || `var(--chart-${(index % 5) + 1})`} 
                     />
                   ))}
                 </Pie>
