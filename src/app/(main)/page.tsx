@@ -3,6 +3,9 @@ import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
 import { CategoryChart, CategoryData } from "@/components/dashboard/category-chart";
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { getSubscriptions, Subscription } from "@/app/actions/subscriptions";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { PlusIcon } from "lucide-react";
 
 export default async function DashboardPage() {
   const subscriptions = await getSubscriptions() as unknown as Subscription[];
@@ -49,7 +52,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="space-y-4 pt-2">
-        <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
+          <Link href="/add" className={buttonVariants({ size: "sm" })}>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add Subscription
+          </Link>
+        </div>
         <SubscriptionList subscriptions={subscriptions as any} />
       </div>
     </div>
