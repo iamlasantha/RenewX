@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/iamlasantha/RenewX/compare/v1.2.0...v1.3.0) (2026-03-22)
+
+
+### Features
+
+* add upcoming renewals notification icon to header ([53b35f7](https://github.com/iamlasantha/RenewX/commit/53b35f72160333a4d63c5ee23813d619c352babe))
+
 ## [1.2.0](https://github.com/iamlasantha/RenewX/compare/v1.1.0...v1.2.0) (2026-03-22)
 
 
