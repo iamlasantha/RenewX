@@ -33,6 +33,22 @@ export async function getSubscriptions() {
   return data as Subscription[];
 }
 
+export async function getSubscriptionById(id: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (error) return null;
+  return data as Subscription;
+}
+
 export async function addSubscription(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -60,6 +76,52 @@ export async function addSubscription(formData: FormData) {
     return { error: error.message };
   }
 
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function updateSubscription(id: string, formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const name = formData.get("name") as string;
+  const amount = Number(formData.get("amount"));
+  const cycleVal = formData.get("cycle") as string;
+  const cycle = (cycleVal.charAt(0).toUpperCase() + cycleVal.slice(1)) as "Monthly" | "Yearly";
+  const categoryVal = formData.get("category") as string;
+  const category = categoryVal.charAt(0).toUpperCase() + categoryVal.slice(1);
+  const date = formData.get("date") as string;
+
+  const { error } = await supabase
+    .from("subscriptions")
+    .update({
+      name,
+      amount,
+      billing_cycle: cycle,
+      category,
+      renewal_date: date,
+    })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function deleteSubscription(id: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
+  const { error } = await supabase
+    .from("subscriptions")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) return { error: error.message };
   revalidatePath("/", "layout");
   return { success: true };
 }

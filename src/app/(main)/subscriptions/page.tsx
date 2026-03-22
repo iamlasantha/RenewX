@@ -2,6 +2,7 @@ import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { getSubscriptions } from "@/app/actions/subscriptions";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
+import { AddSubscriptionButton } from "@/components/dashboard/add-subscription-button";
 
 export default async function SubscriptionsPage() {
   const subscriptions = await getSubscriptions() as any[];
@@ -15,13 +16,16 @@ export default async function SubscriptionsPage() {
             Manage your active subscriptions
           </p>
         </div>
-        <div className="relative w-full sm:w-64">
-          <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search subscriptions..."
-            className="w-full pl-8 bg-background"
-          />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search subscriptions..."
+              className="w-full pl-8 bg-background"
+            />
+          </div>
+          <AddSubscriptionButton size="default" />
         </div>
       </div>
 

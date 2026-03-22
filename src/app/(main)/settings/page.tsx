@@ -1,21 +1,24 @@
-"use client";
-
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, User } from "lucide-react";
-
+import { LogOut } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
 import { logout } from "@/app/actions/auth";
 
-export default function SettingsPage() {
-  const router = useRouter();
+export default async function SettingsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const handleLogout = async () => {
-    await logout();
-  };
+  const fullName = user?.user_metadata?.full_name || "User";
+  const email = user?.email || "";
+  const initials = fullName
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -34,7 +37,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16 bg-primary/10">
-              <AvatarFallback className="text-primary font-medium text-xl">US</AvatarFallback>
+              <AvatarFallback className="text-primary font-medium text-xl">{initials}</AvatarFallback>
             </Avatar>
             <div>
               <p className="text-sm font-medium">Profile Picture</p>
@@ -44,11 +47,11 @@ export default function SettingsPage() {
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" defaultValue="" placeholder="Loading..." disabled />
+              <Input id="name" defaultValue={fullName} disabled />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" defaultValue="" placeholder="Loading..." disabled />
+              <Input id="email" type="email" defaultValue={email} disabled />
             </div>
             <Button disabled>Save Changes</Button>
           </div>
@@ -66,12 +69,11 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button 
-            variant="destructive" 
-            onClick={handleLogout}
-          >
-            Sign Out
-          </Button>
+          <form action={logout}>
+            <Button variant="destructive" type="submit">
+              Sign Out
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

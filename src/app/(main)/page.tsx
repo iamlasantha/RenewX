@@ -3,6 +3,7 @@ import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
 import { CategoryChart, CategoryData } from "@/components/dashboard/category-chart";
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { getSubscriptions, Subscription } from "@/app/actions/subscriptions";
+import { AddSubscriptionButton } from "@/components/dashboard/add-subscription-button";
 
 export default async function DashboardPage() {
   const subscriptions = await getSubscriptions() as unknown as Subscription[];
@@ -49,7 +50,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="space-y-4 pt-2">
-        <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
+          <AddSubscriptionButton text="Add Subscription" />
+        </div>
         <SubscriptionList subscriptions={subscriptions as any} />
       </div>
     </div>
