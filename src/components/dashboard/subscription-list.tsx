@@ -7,8 +7,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { formatCurrency } from "@/lib/utils";
 
-export function SubscriptionList({ subscriptions }: { subscriptions: Subscription[] }) {
+export function SubscriptionList({ subscriptions, currency = "USD" }: { subscriptions: Subscription[], currency?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -44,7 +45,7 @@ export function SubscriptionList({ subscriptions }: { subscriptions: Subscriptio
               </div>
               <div className="flex items-center gap-1">
                 <div className="font-bold text-lg mr-1">
-                  ${sub.amount.toFixed(2)}
+                  {formatCurrency(sub.amount, currency)}
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger 

@@ -2,8 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Subscription } from "@/app/actions/subscriptions";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
-export function UpcomingRenewals({ subscriptions }: { subscriptions: Subscription[] }) {
+export function UpcomingRenewals({ subscriptions, currency = "USD" }: { subscriptions: Subscription[], currency?: string }) {
   // Sort by closest renewal date
   const upcoming = [...subscriptions].sort((a, b) => 
     new Date(a.renewal_date).getTime() - new Date(b.renewal_date).getTime()
@@ -28,7 +29,7 @@ export function UpcomingRenewals({ subscriptions }: { subscriptions: Subscriptio
                 </span>
               </div>
               <div className="font-semibold text-sm">
-                ${sub.amount.toFixed(2)}
+                {formatCurrency(sub.amount, currency)}
               </div>
             </div>
           ))}

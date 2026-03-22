@@ -3,8 +3,13 @@ import { getSubscriptions } from "@/app/actions/subscriptions";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { AddSubscriptionButton } from "@/components/dashboard/add-subscription-button";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function SubscriptionsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const currency = user?.user_metadata?.currency || "USD";
+
   const subscriptions = await getSubscriptions() as any[];
 
   return (
@@ -30,7 +35,7 @@ export default async function SubscriptionsPage() {
       </div>
 
       <div className="pt-2">
-        <SubscriptionList subscriptions={subscriptions} />
+        <SubscriptionList subscriptions={subscriptions} currency={currency} />
       </div>
     </div>
   );

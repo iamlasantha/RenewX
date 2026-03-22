@@ -4,8 +4,13 @@ import { CategoryChart, CategoryData } from "@/components/dashboard/category-cha
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { getSubscriptions, Subscription } from "@/app/actions/subscriptions";
 import { AddSubscriptionButton } from "@/components/dashboard/add-subscription-button";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const currency = user?.user_metadata?.currency || "USD";
+
   const subscriptions = await getSubscriptions() as unknown as Subscription[];
 
   const activeSubscriptions = subscriptions.filter(s => s.status === 'Active');
@@ -39,8 +44,8 @@ export default async function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Summary Card - takes 1 col on all sizes above mobile */}
         <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-6">
-          <SummaryCard totalAmount={totalMonthlySpend} />
-          <UpcomingRenewals subscriptions={activeSubscriptions as any} />
+          <SummaryCard totalAmount={totalMonthlySpend} currency={currency} />
+          <UpcomingRenewals subscriptions={activeSubscriptions as any} currency={currency} />
         </div>
         
         {/* Category Chart */}
@@ -54,7 +59,7 @@ export default async function DashboardPage() {
           <h2 className="text-xl font-semibold tracking-tight">Your Subscriptions</h2>
           <AddSubscriptionButton text="Add Subscription" />
         </div>
-        <SubscriptionList subscriptions={subscriptions as any} />
+        <SubscriptionList subscriptions={subscriptions as any} currency={currency} />
       </div>
     </div>
   );

@@ -45,3 +45,15 @@ export async function logout() {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+export async function updateCurrency(currency: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({
+    data: { currency }
+  });
+  
+  if (error) return { error: error.message };
+  
+  revalidatePath("/", "layout");
+  return { success: true };
+}

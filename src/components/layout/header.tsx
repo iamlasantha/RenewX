@@ -1,8 +1,18 @@
 import Link from "next/link";
-import { CopyIcon, BellIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CopyIcon } from "lucide-react";
+import { NotificationsDropdown } from "@/components/layout/notifications-dropdown";
+import { getSubscriptions, Subscription } from "@/app/actions/subscriptions";
+import { createClient } from "@/utils/supabase/server";
 
-export function Header() {
+export async function Header() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const currency = user?.user_metadata?.currency || "USD";
+  
+  let subscriptions: Subscription[] = [];
+  if (user) {
+    subscriptions = await getSubscriptions() as unknown as Subscription[];
+  }
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center px-4 md:px-8">
@@ -31,10 +41,7 @@ export function Header() {
           </nav>
           
           <div className="flex items-center gap-2 ml-auto md:ml-0">
-            <Button variant="ghost" size="icon" className="h-9 w-9 border">
-              <BellIcon className="h-4 w-4" />
-              <span className="sr-only">Notifications</span>
-            </Button>
+            <NotificationsDropdown subscriptions={subscriptions} currency={currency} />
           </div>
         </div>
       </div>
