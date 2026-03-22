@@ -1,6 +1,6 @@
 # 🚀 RenewX
 
-RenewX is a modern, responsive subscription and expense tracker. It helps users manage their recurring payments, visualize monthly spending, and receive smart reminders for upcoming renewals. 
+RenewX is a modern, responsive subscription tracker. It helps users manage their recurring payments, visualize monthly spending, and receive smart reminders for upcoming renewals. 
 
 Built with the modern **Next.js App Router**, **Supabase**, and optimized for production with highly secure multi-stage **Docker** containerization.
 
