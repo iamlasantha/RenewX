@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { logout } from "@/app/actions/auth";
+import { CurrencyForm } from "@/components/settings/currency-form";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -13,6 +14,7 @@ export default async function SettingsPage() {
 
   const fullName = user?.user_metadata?.full_name || "User";
   const email = user?.email || "";
+  const currency = user?.user_metadata?.currency || "USD";
   const initials = fullName
     .split(" ")
     .map((n: string) => n[0])
@@ -53,7 +55,7 @@ export default async function SettingsPage() {
               <Label htmlFor="email">Email Address</Label>
               <Input id="email" type="email" defaultValue={email} disabled />
             </div>
-            <Button disabled>Save Changes</Button>
+            <CurrencyForm initialCurrency={currency} />
           </div>
         </CardContent>
       </Card>
