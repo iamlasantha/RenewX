@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/iamlasantha/RenewX/compare/v1.1.0...v1.2.0) (2026-03-22)
+
+
+### Features
+
+* add missing plus button to dashboards ([49ab5ef](https://github.com/iamlasantha/RenewX/commit/49ab5efd7a525cbafe0a29b5693ab956fceae499))
+* display user profile data in settings ([1365fc2](https://github.com/iamlasantha/RenewX/commit/1365fc2f964b987cbc2e8d1aafede1f18bf17978))
+* implement edit and delete crud operations ([130e865](https://github.com/iamlasantha/RenewX/commit/130e86546351252fa3487daf5e808f3c65675498))
+
+
+### Bug Fixes
+
+* resolve redirect error catching bug in client ([0a775ee](https://github.com/iamlasantha/RenewX/commit/0a775eec547ab92256ddc93db80ecde6ce2fa436))
+* resolve redirect error catching bug in client ([46c7a0f](https://github.com/iamlasantha/RenewX/commit/46c7a0f1f31245138f0dc4d1a5feea23dfddd760))
+* resolve server-side buttonVariants execution error ([438a76d](https://github.com/iamlasantha/RenewX/commit/438a76d9fa293b0daace823c6a074bd5f5c0d3b1))
+
 ## [1.1.0](https://github.com/iamlasantha/RenewX/compare/v1.0.0...v1.1.0) (2026-03-22)
 
 
