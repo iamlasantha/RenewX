@@ -13,7 +13,7 @@ export async function login(formData: FormData) {
   if (error) return { error: error.message };
   
   revalidatePath("/", "layout");
-  redirect("/");
+  return { success: true };
 }
 
 export async function signup(formData: FormData) {
@@ -22,7 +22,7 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string;
   const name = formData.get("name") as string;
   
-  const { error } = await supabase.auth.signUp({ 
+  const { data, error } = await supabase.auth.signUp({ 
     email, 
     password,
     options: {
@@ -31,9 +31,13 @@ export async function signup(formData: FormData) {
   });
   
   if (error) return { error: error.message };
+
+  if (data.user && !data.session) {
+    return { error: "Success! Please check your email to confirm your account." };
+  }
   
   revalidatePath("/", "layout");
-  redirect("/");
+  return { success: true };
 }
 
 export async function logout() {

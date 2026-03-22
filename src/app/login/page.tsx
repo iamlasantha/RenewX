@@ -26,14 +26,22 @@ export default function LoginPage() {
     setIsLoading(true);
     setErrorStr("");
     
-    const formData = new FormData(e.currentTarget);
-    const action = isLogin ? login : signup;
-    
-    const result = await action(formData);
-    if (result?.error) {
-      setErrorStr(result.error);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const action = isLogin ? login : signup;
+      
+      const result = await action(formData);
+      if (result?.error) {
+        setErrorStr(result.error);
+        setIsLoading(false);
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorStr("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
